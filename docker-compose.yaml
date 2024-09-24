@@ -1,0 +1,28 @@
+services:
+  dev-dynamodb:
+    image: streamcart-dynamodb-local:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+
+  dev-mailhog:
+    image: mailhog/mailhog:v1.0.0
+    container_name: mailhog
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # HTTP
+
+  dev-user-service:
+    image: streamcart/user-service:v1
+    container_name: user-service
+    ports:
+      - "8080:8080"
+    environment:
+      - MAIL_HOST=dev-mailhog
+      - MAIL_PORT=1025
+      - MAIL_PROTOCOL=smtp
+      - JWT_KEY=secret
+      - DYNAMODB_URI=http://dev-dynamodb:8000
+      - AWS_REGION=us-west-2
+      - AWS_ACCESS_KEY_ID=access
+      - AWS_SECRET_ACCESS_KEY=secret

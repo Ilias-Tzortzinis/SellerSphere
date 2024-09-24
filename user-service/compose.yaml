@@ -1,7 +1,11 @@
 services:
   mailhog:
-    image: mailhog/mailhog
-    container_name: mailhog
+    image: mailhog/mailhog:v1.0.0
     ports:
       - "1025:1025" # SMTP port
       - "8025:8025" # Dashboard + REST API port
+
+  dynamodb-local:
+    image: streamcart-dynamodb-local:latest
+    ports:
+      - "8000:8000"
