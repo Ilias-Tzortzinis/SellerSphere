@@ -8,7 +8,7 @@ StreamCart is a **Full-Fledged E-Commerce Platform with Real-Time Analytics**.
 - Each product will have attributes specific to its category (e.g., electronics will have technical specs, apparel will have sizes and colors).
 - Users can filter and search products based on category-specific attributes.
 
-[**2) User Authentication and Profiles:**](./docs/UserService.md)
+[**2) User Authentication and Profiles:**](./user-service/README.md)
 - Implement user registration and authentication.
 - Users can manage profiles, view order history, and save favorite products across categories.
 
