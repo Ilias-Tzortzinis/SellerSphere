@@ -2,4 +2,30 @@ services:
   zipkin:
     image: 'openzipkin/zipkin:latest'
     ports:
-      - '9411'
+      - '9411:9411'
+
+  dynamodb:
+    image: streamcart-dynamodb-local
+    ports:
+      - '8000:8000'
+
+  user-service:
+    image: streamcart/user-service:v1
+    ports:
+      - '8001:8080'
+    environment:
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
+      - MAIL_PROTOCOL=smtp
+      - JWT_KEY=secret
+      - DYNAMODB_URI=http://dynamodb:8000
+      - AWS_REGION=us-west-2
+      - AWS_ACCESS_KEY_ID=access
+      - AWS_SECRET_ACCESS_KEY=secret
+      - ZIPKIN_URI=http://zipkin:9411
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    ports:
+      - '1025:1025' # SMTP
+      - '8025:8025' # REST

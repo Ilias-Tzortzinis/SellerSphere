@@ -1,10 +1,8 @@
 FROM openjdk:21
 
-COPY ./user-service/target/user-service-1.0.0.jar /app/user-service.jar
-COPY ./docker/user-service/application.properties /app/application.properties
-
-WORKDIR /app
+COPY ./target/user-service-1.0.0.jar /app/user-service.jar
+COPY ./src/main/resources/prod-application.properties /app/application.properties
 
 ENTRYPOINT ["java"]
 
-CMD ["-jar", "user-service.jar", "--spring.config.location=/app/application.properties"]
+CMD ["-jar", "/app/user-service.jar", "--spring.config.location=/app/application.properties"]

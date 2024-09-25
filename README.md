@@ -12,7 +12,7 @@ StreamCart is a **Full-Fledged E-Commerce Platform with Real-Time Analytics**.
 - Implement user registration and authentication.
 - Users can manage profiles, view order history, and save favorite products across categories.
 
-**3) Shopping Cart and Checkout:**
+[**3) Shopping Cart and Checkout:**](./cart-service/README.md)
 - Users can add items to a shopping cart across multiple sessions.
 - Implement a checkout process with support for multiple payment gateways.
 - Include validation for product availability before order placement.
