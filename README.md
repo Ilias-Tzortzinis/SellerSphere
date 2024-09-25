@@ -3,7 +3,7 @@
 StreamCart is a **Full-Fledged E-Commerce Platform with Real-Time Analytics**.
 
 ### Key Features
-**1) Product Catelog with Categories:**
+[**1) Product Catelog with Categories:**](./product-service/README.md)
 - The platform must support a variety of product categories such as Electronics, Apparel, Books, and Home Appliances.
 - Each product will have attributes specific to its category (e.g., electronics will have technical specs, apparel will have sizes and colors).
 - Users can filter and search products based on category-specific attributes.
