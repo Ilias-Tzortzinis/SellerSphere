@@ -12,6 +12,13 @@ services:
       - "1025:1025" # SMTP
       - "8025:8025" # HTTP
 
+  dev-zipkin:
+    image: 'openzipkin/zipkin:latest'
+    ports:
+      - '9411:9411'
+    environment:
+      - STORAGE_TYPE=mem
+
   dev-user-service:
     image: streamcart/user-service:v1
     container_name: user-service
@@ -26,3 +33,4 @@ services:
       - AWS_REGION=us-west-2
       - AWS_ACCESS_KEY_ID=access
       - AWS_SECRET_ACCESS_KEY=secret
+      - ZIPKIN_URI=http://dev-zipkin:9411

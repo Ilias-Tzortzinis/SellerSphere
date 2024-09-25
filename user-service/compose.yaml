@@ -9,3 +9,10 @@ services:
     image: streamcart-dynamodb-local:latest
     ports:
       - "8000:8000"
+
+  zipkin:
+    image: 'openzipkin/zipkin:latest'
+    ports:
+      - '9411:9411'
+    environment:
+      - STORAGE_TYPE=mem

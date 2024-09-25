@@ -1,6 +1,7 @@
 package com.streamcart.userservice;
 
 import com.streamcart.userservice.security.JsonWebTokenService;
+import io.micrometer.observation.ObservationRegistry;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -45,12 +46,12 @@ class IntegrationConfig {
     @Bean
     @Primary
     public JsonWebTokenService webTokenService(DynamoDbClient dynamoDb) {
-        return new JsonWebTokenService(dynamoDb, "secret", "PT10M", "P1D");
+        return new JsonWebTokenService(dynamoDb, ObservationRegistry.NOOP, "secret", "PT10M", "P1D");
     }
 
     @Bean
     @Primary
     public UserService userService(DynamoDbClient dynamoDbClient){
-        return new UserService(dynamoDbClient, () -> UserServiceApplicationIntegrationTests.CLOCK.get());
+        return new UserService(dynamoDbClient, () -> UserServiceApplicationIntegrationTests.CLOCK.get(), ObservationRegistry.NOOP);
     }
 }
