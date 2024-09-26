@@ -34,12 +34,12 @@ public class CartServiceConfiguration {
     }
 
     @Bean
-    public DynamoDbClient dynamoDbClient(@Value("${dynamodb.uri}") String uri,
+    public DynamoDbClient dynamoDbClient(@Value("${dynamodb.url}") String url,
                                          @Value("${aws.region}") String region,
                                          @Value("${aws.access-key-id}") String accessKeyId,
                                          @Value("${aws.secret-access-key}") String secretAccessKey){
         return DynamoDbClient.builder()
-                .endpointOverride(URI.create(uri))
+                .endpointOverride(URI.create(url))
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
                 .build();

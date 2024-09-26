@@ -2,4 +2,10 @@ services:
   zipkin:
     image: 'openzipkin/zipkin:latest'
     ports:
-      - '9411'
+      - '9411:9411'
+
+  mongodb:
+    image: 'mongo:8.0.0'
+    ports:
+      - '27017:27017'
+

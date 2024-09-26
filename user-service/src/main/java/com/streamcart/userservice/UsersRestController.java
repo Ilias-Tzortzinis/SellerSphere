@@ -25,11 +25,10 @@ public final class UsersRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@RequestBody @Valid UserCredentials credentials){
+    public void registerUser(@RequestBody @Valid UserCredentials credentials){
         try {
             var verificationCode = userService.registerUser(credentials);
             userNotificationService.sendVerificationMail(credentials.email(), verificationCode);
-            return new ResponseEntity<>(HttpStatus.OK);
         } catch (UserAlreadyExistsException exc) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, null, exc);
         }
@@ -55,10 +54,9 @@ public final class UsersRestController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<Void> logoutUser(@RequestHeader("X-REFRESH-TOKEN") String refreshToken){
+    public void logoutUser(@RequestHeader("X-REFRESH-TOKEN") String refreshToken){
         try {
             jwtService.deleteSession(refreshToken);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (JWTVerificationException e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, null, e);
