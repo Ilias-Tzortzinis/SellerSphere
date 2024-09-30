@@ -10,5 +10,6 @@
 
     <modules>
         <module>user-service</module>
+        <module>seller-sphere-authorization</module>
     </modules>
 </project>
