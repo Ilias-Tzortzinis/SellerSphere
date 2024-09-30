@@ -1,0 +1,18 @@
+services:
+  zipkin:
+    image: 'openzipkin/zipkin:latest'
+    ports:
+      - '9411'
+
+  user-service:
+    image: 'seller-sphere/user-service:latest'
+    ports:
+      - '8001:8080'
+    environment:
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      DYNAMODB_URL: 'http://dynamodb:8000'
+      AWS_REGION: 'us-west-2'
+      AWS_ACCESS_KEY_ID: access
+      AWS_SECRET_ACCESS_KEY: secret
+      JWT_SECRET: secret
