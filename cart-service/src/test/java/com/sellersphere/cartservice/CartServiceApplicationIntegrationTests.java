@@ -110,7 +110,7 @@ class CartServiceApplicationIntegrationTests {
 				.isEmpty();
 	}
 
-	static final String VALID_PRODUCT_ID = "qwertyuiopasdfghjklzxcvb";
+	static final String VALID_PRODUCT_ID = "66fabd5c84e4461f161eb753"; // valid mongodb objectid (24 chars)
 
 	@Value("${security.jwt.issuer}")
 	String jwtIssuer;
