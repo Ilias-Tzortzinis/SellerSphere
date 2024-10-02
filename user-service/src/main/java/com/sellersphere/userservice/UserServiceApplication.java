@@ -47,10 +47,10 @@ public class UserServiceApplication {
 	}
 
 	@Bean
-	public DynamoDbClient dynamoDbClient(@Value("${dynamodb.url}") String url,
-										 @Value("${aws.region}") String region,
-										 @Value("${aws.access-key-id}") String accessKeyId,
-										 @Value("${aws.secret-access-key}") String secretAccessKey){
+	public DynamoDbClient dynamoDbClient(@Value("${DYNAMODB_URL}") String url,
+										 @Value("${AWS_REGION}") String region,
+										 @Value("${AWS_ACCESS_KEY_ID}") String accessKeyId,
+										 @Value("${AWS_SECRET_ACCESS_KEY}") String secretAccessKey){
 		return DynamoDbClient.builder()
 				.endpointOverride(URI.create(url))
 				.region(Region.of(region))

@@ -7,7 +7,7 @@ in the programming world.
 **The Architecture is documented in [<u>arch.md</u>](./docs/arch.md).**
 ## Features 
 
-- ### User Management:
+- ### User Management: 
     - User registration and authentication (sign up, log in, password recovery).
     - User profile management (view and edit personal information).
 - ### Shopping Cart:

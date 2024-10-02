@@ -1,5 +1,9 @@
+include:
+  - ../docker-compose.yaml
 services:
   zipkin:
     image: 'openzipkin/zipkin:latest'
     ports:
       - '9411'
+
+

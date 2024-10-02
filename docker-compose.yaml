@@ -1,10 +1,9 @@
 services:
-
   mailhog:
     image: 'mailhog/mailhog:v1.0.0'
     ports:
-      - '1025:1025' # SMTP port
-      - '8025:8025' # REST port
+      - "1025:1025" # SMTP port
+      - "8025:8025" # HTTP port
 
   dynamodb:
     image: 'amazon/dynamodb-local'
@@ -14,16 +13,16 @@ services:
     healthcheck:
       test: ["CMD-SHELL", '[ "$(curl -s -o /dev/null -I -w ''%{http_code}'' http://localhost:8000)" == "400" ]']
       interval: 1s
-      timeout: 10s
-      retries: 10
+      timeout: 3s
+      retries: 5
 
   aws-cli:
     image: 'amazon/aws-cli'
     user: root
     environment:
-      AWS_ACCESS_KEY_ID: access
-      AWS_SECRET_ACCESS_KEY: secret
-      AWS_REGION: us-west-2
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
     volumes:
       - ./docker/dynamodb-init-script.sh:/scripts/dynamodb-init-script.sh
     entrypoint: ['bash']
@@ -31,4 +30,3 @@ services:
     depends_on:
       dynamodb:
         condition: service_healthy
-      

@@ -36,7 +36,7 @@ public class ProductServiceApplication {
 	}
 
 	@Bean
-	public MongoClient mongoClient(@Value("${mongodb.url}") String url){
+	public MongoClient mongoClient(@Value("${MONGO_URL}") String url){
 		return MongoClients.create(url);
 	}
 }

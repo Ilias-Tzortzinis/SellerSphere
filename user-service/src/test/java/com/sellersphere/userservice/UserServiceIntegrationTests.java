@@ -15,6 +15,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.ComposeContainer;
+import org.testcontainers.containers.ContainerState;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -23,30 +24,34 @@ import java.io.File;
 import static io.restassured.RestAssured.given;
 
 @Testcontainers
-@TestPropertySource(properties = {"security.jwt.secret=secret", "aws.region=us-west-2", "aws.access-key-id=access", "aws.secret-access-key=secret"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+		"AWS_REGION=us-west-2",
+		"AWS_ACCESS_KEY_ID=access",
+		"AWS_SECRET_ACCESS_KEY=secret",
+		"security.jwt.secret=secret"
+})
 class UserServiceIntegrationTests {
 
 	@Container
-	static final ComposeContainer COMPOSE = new ComposeContainer(new File("../docker-compose.yaml"))
+	static final ComposeContainer COMPOSE = new ComposeContainer(new File("compose.yaml"))
 			.withExposedService("dynamodb", 8000)
 			.withExposedService("mailhog", 1025)
-			.withExposedService("mailhog", 8025);
+			.withExposedService("mailhog", 8025)
+			.withLocalCompose(true);
 
 	@DynamicPropertySource
 	static void testProperties(DynamicPropertyRegistry registry){
 		registry.add("spring.mail.host", () -> COMPOSE.getServiceHost("mailhog", 1025));
 		registry.add("spring.mail.port", () -> COMPOSE.getServicePort("mailhog", 1025));
-		registry.add("dynamodb.uri", () -> "http://" + COMPOSE.getServiceHost("dynamodb", 8000) + ":" +
-				COMPOSE.getServicePort("dynamodb", 8000));
-
-		registry.add("mailhog.port", () -> COMPOSE.getServicePort("mailhog", 8025));
+		registry.add("DYNAMODB_URL", () -> {
+			var container = COMPOSE.getContainerByServiceName("dynamodb").orElseThrow();
+			return "http://" + container.getHost() + ":" + container.getFirstMappedPort();
+        });
 	}
 
 	@LocalServerPort
 	int userService;
-	@Value("${mailhog.port}")
-	int mailhogPort;
+	int mailhogPort = COMPOSE.getServicePort("mailhog", 8025);
 
 	@Test
 	@DisplayName("User register, verify, login flow")

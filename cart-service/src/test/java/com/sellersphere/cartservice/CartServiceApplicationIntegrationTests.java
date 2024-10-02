@@ -15,6 +15,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.ComposeContainer;
+import org.testcontainers.containers.ContainerState;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -28,22 +29,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
 		"security.jwt.issuer=issuer",
 		"security.jwt.secret=secret",
-		"aws.region=us-west-2",
-		"aws.access-key-id=access",
-		"aws.secret-access-key=secret"
+		"AWS_REGION=us-west-2",
+		"AWS_ACCESS_KEY_ID=access",
+		"AWS_SECRET_ACCESS_KEY=secret"
 })
 class CartServiceApplicationIntegrationTests {
 
 	@Container
-	static final ComposeContainer COMPOSE = new ComposeContainer(new File("../docker-compose.yaml"), new File("./compose.yaml"))
+	static final ComposeContainer COMPOSE = new ComposeContainer(new File("./compose.yaml"))
 			.withExposedService("dynamodb", 8000)
 			.withExposedService("user-service", 8080)
-			.withExposedService("mailhog", 8025);
+			.withExposedService("mailhog", 8025)
+			.withLocalCompose(true);
 
 	@DynamicPropertySource
 	static void registerProperties(DynamicPropertyRegistry registry){
-		registry.add("dynamodb.url", () -> "http://" + COMPOSE.getServiceHost("dynamodb", 8000)
-			 + ":" + COMPOSE.getServicePort("dynamodb", 8000));
+		registry.add("DYNAMODB_URL", () -> {
+			var dynamodb = COMPOSE.getContainerByServiceName("dynamodb").orElseThrow();
+			return "http://" + dynamodb.getHost() + ":" + dynamodb.getFirstMappedPort();
+        });
 	}
 
 	@LocalServerPort

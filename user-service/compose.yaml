@@ -1,1 +1,2 @@
-services:
+include:
+  - ../docker-compose.yaml
