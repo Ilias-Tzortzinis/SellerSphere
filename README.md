@@ -1,6 +1,6 @@
-# StreamCart
+# SellerSphere
 
-StreamCart is a **Fully-Fledged E-Commerce Platform with realtime analytics**. 
+SellerSphere is a **Fully-Fledged E-Commerce Platform with realtime analytics**. 
 This is a personal project to hone my skills and knowledge of different technlogies
 in the programming world.
 

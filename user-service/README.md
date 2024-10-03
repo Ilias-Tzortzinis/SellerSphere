@@ -8,7 +8,7 @@ specifically:
 ## Architecture
 ```mermaid
 graph TB
-S[User Service] -- user data --> DynamoDB
+S[User Service] -- user data <--> DynamoDB
 S -- user verification emails --> M[Mail Service]
 ```
 

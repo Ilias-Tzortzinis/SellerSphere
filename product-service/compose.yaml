@@ -6,4 +6,16 @@ services:
     ports:
       - '9411'
 
+  mongodb:
+    image: mongo:8.0.0
+    command: ["--replSet", "mongo", "--bind_ip_all", "--port", "27017"]
+    ports:
+      - "27017:27017"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'mongo',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 --quiet
+      interval: 2s
+      timeout: 6s
+      retries: 3
 

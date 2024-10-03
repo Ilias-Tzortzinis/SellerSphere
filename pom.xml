@@ -11,5 +11,7 @@
     <modules>
         <module>user-service</module>
         <module>seller-sphere-authorization</module>
+        <module>cart-service</module>
+        <module>product-service</module>
     </modules>
 </project>

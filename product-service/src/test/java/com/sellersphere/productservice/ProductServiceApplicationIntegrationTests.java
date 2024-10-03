@@ -37,7 +37,7 @@ class ProductServiceApplicationIntegrationTests {
 
 	@DynamicPropertySource
 	static void registerMongo(DynamicPropertyRegistry registry){
-		registry.add("mongodb.url", MONGO_DB::getConnectionString);
+		registry.add("MONGO_URL", MONGO_DB::getConnectionString);
 	}
 
 	@LocalServerPort
