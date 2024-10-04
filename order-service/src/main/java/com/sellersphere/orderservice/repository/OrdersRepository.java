@@ -1,6 +1,6 @@
 package com.sellersphere.orderservice.repository;
 
-import com.sellersphere.orderservice.data.OrderDetials;
+import com.sellersphere.orderservice.data.OrderDetails;
 import com.sellersphere.orderservice.data.OrderItem;
 import com.sellersphere.orderservice.data.OrderQuery;
 import com.sellersphere.orderservice.data.UserOrderView;
@@ -14,7 +14,7 @@ public interface OrdersRepository {
 
     String createOrderId(ZonedDateTime dateTime);
 
-    OrderDetials saveOrder(String userId, String orderId, ZonedDateTime dateTime, List<OrderItem> orderItems);
+    OrderDetails saveOrder(String userId, String orderId, ZonedDateTime dateTime, List<OrderItem> orderItems);
 
-    Optional<OrderDetials> findOrderById(String userId, String orderId);
+    Optional<OrderDetails> findOrderById(String userId, String orderId);
 }

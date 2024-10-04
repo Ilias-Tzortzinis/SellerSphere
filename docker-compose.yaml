@@ -12,8 +12,8 @@ services:
       - '8000:8000'
     healthcheck:
       test: ["CMD-SHELL", '[ "$(curl -s -o /dev/null -I -w ''%{http_code}'' http://localhost:8000)" == "400" ]']
-      interval: 1s
-      timeout: 3s
+      interval: 2s
+      timeout: 5s
       retries: 5
 
   aws-cli:

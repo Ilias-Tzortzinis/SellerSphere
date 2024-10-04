@@ -1,5 +1,3 @@
 package com.sellersphere.orderservice.data;
 
-import java.util.List;
-
-public record UserOrderView(String orderId, long unixEpoch, double totalPrice){}
+public record UserOrderView(String orderId, OrderStatus status, long placedAt, int totalPrice){}

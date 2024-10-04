@@ -51,7 +51,7 @@ class ProductServiceApplicationIntegrationTests {
 		int minPrice = 500, maxPrice = 800;
 		int expectedCount = (int) Instancio.of(Laptop.class)
 				.ignore(field(Laptop::productId))
-				.generate(field(Laptop::price), gen -> gen.ints().range(230, 1400).as(Integer::doubleValue))
+				.generate(field(Laptop::price), gen -> gen.ints().range(230, 1400))
 				.stream()
 				.limit(15)
 				.peek(this::saveIntoMongoDB)
@@ -86,6 +86,9 @@ class ProductServiceApplicationIntegrationTests {
 				.append("category", LAPTOP.name())
 				.append("quantity", laptop.quantity())
 				.append("price", laptop.price())
+				.append("productName", laptop.productName())
+				.append("images", laptop.images())
+				.append("description", laptop.description())
 				.append("ram", laptop.ram());
         if (laptop.productId() != null) {
             document.append("_id", new ObjectId(laptop.productId()));

@@ -3,7 +3,7 @@ package com.sellersphere.orderservice;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.mongodb.client.MongoClient;
-import com.sellersphere.orderservice.data.OrderDetials;
+import com.sellersphere.orderservice.data.OrderDetails;
 import com.sellersphere.orderservice.data.OrderItem;
 import com.sellersphere.orderservice.data.UserOrderView;
 import io.restassured.http.ContentType;
@@ -29,27 +29,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-		"aws.region=us-west-2",
-		"aws.access-key-id=access",
-		"aws.secret-access-key=secret",
+		"AWS_REGION=us-west-2",
+		"AWS_ACCESS_KEY_ID=access",
+		"AWS_SECRET_ACCESS_KEY=secret",
 		"security.jwt.secret=secret",
-		"security.jwt.issuer=issuer",
 		"kafka.topic=placed-orders"
 })
-class OrderServiceApplicationTests {
+class OrderServiceIntegrationTests {
 
 	@Container
-	static final ComposeContainer COMPOSE = new ComposeContainer(new File("../docker-compose.yaml"), new File("compose.yaml"))
+	static final ComposeContainer COMPOSE = new ComposeContainer(new File("compose.yaml"))
 			.withExposedService("dynamodb", 8000)
 			.withExposedService("kafka", 9092)
 			.withExposedService("mongodb", 27017)
-			.withExposedService("cart-service", 8002);
+			.withExposedService("cart-service", 8002)
+			.withLocalCompose(true);
 
 	@DynamicPropertySource
 	static void register(DynamicPropertyRegistry registry){
-		registry.add("dynamodb.url", () -> "http://".concat(hostAndPort("dynamodb")));
+		registry.add("DYNAMODB_URL", () -> "http://".concat(hostAndPort("dynamodb")));
 		registry.add("kafka.bootstrap-servers", () -> hostAndPort("kafka"));
-		registry.add("mongodb.url", () -> "mongodb://".concat(hostAndPort("mongodb")));
+		registry.add("MONGODB_URL", () -> "mongodb://".concat(hostAndPort("mongodb")));
 	}
 
 	@LocalServerPort
@@ -62,10 +62,10 @@ class OrderServiceApplicationTests {
 	void contextLoads() {
 		var accessToken = accessTokenInHeader("bob@bmail.com");
 
-		var productId = insertProductIntoMongo("laptop", "X-Laptop", 15, 230.99);
+		var productId = insertProductIntoMongo("laptop", "X-Laptop", 15, 230_99);
 
 		given().port(cartService).header(accessToken).contentType(ContentType.JSON).body("""
-				{ "productId": "%s", "quantity": "5" }
+				{ "productId": "%s", "quantity": 5 }
 				""".formatted(productId))
 				.when().patch("/cart")
 				.then().statusCode(200);
@@ -73,7 +73,7 @@ class OrderServiceApplicationTests {
 		var orderDetials = given().port(orderService).header(accessToken)
 				.when().post("/orders")
 				.then().statusCode(200)
-				.extract().body().as(OrderDetials.class);
+				.extract().body().as(OrderDetails.class);
 
 		var orders = given().port(orderService).header(accessToken)
 				.when().get("/orders")
@@ -82,16 +82,16 @@ class OrderServiceApplicationTests {
 
 		assertThat(orders).singleElement().satisfies(view -> {
 			assertThat(view.orderId()).isEqualTo(orderDetials.orderId());
-			assertThat(view.totalPrice()).isEqualTo(orderDetials.items().stream().mapToDouble(OrderItem::price).sum());
-			assertThat(view.unixEpoch()).isEqualTo(orderDetials.unixEpoch());
+			assertThat(view.totalPrice()).isEqualTo(orderDetials.items().stream().mapToInt(OrderItem::price).sum());
+			assertThat(view.placedAt()).isEqualTo(orderDetials.placedAt());
 		});
 	}
 
-	private String insertProductIntoMongo(String category, String name, int quantity, double price){
+	private String insertProductIntoMongo(String category, String name, int quantity, int price){
 		return mongoClient.getDatabase("sellersphere").getCollection("products")
 				.insertOne(new Document()
 						.append("category", category)
-						.append("name", name)
+						.append("productName", name)
 						.append("quantity", quantity)
 						.append("price", price)
 						.append("version", 1))
@@ -111,8 +111,7 @@ class OrderServiceApplicationTests {
 
 	@Value("${security.jwt.secret}")
 	String jwtSecret;
-	@Value("${security.jwt.issuer}")
-	String jwtIssuer;
+	String jwtIssuer = "https://seller-sphere.com";
 
 	@BeforeEach
 	void setPorts(){

@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.security.web.SecurityFilterChain;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -23,10 +22,8 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @SpringBootApplication(scanBasePackages = "com.sellersphere", exclude = {SecurityAutoConfiguration.class})
 public class OrderServiceApplication {
@@ -51,10 +48,10 @@ public class OrderServiceApplication {
 	}
 
 	@Bean
-	public DynamoDbClient dynamoDbClient(@Value("${dynamodb.url}") String url,
-										 @Value("${aws.region}") String region,
-										 @Value("${aws.access-key-id}") String accessKeyId,
-										 @Value("${aws.secret-access-key}") String secretAccessKey){
+	public DynamoDbClient dynamoDbClient(@Value("${DYNAMODB_URL}") String url,
+										 @Value("${AWS_REGION}") String region,
+										 @Value("${AWS_ACCESS_KEY_ID}") String accessKeyId,
+										 @Value("${AWS_SECRET_ACCESS_KEY}") String secretAccessKey){
 		return DynamoDbClient.builder()
 				.endpointOverride(URI.create(url))
 				.region(Region.of(region))
@@ -63,7 +60,7 @@ public class OrderServiceApplication {
 	}
 
 	@Bean
-	public MongoClient mongoClient(@Value("${mongodb.url}") String url){
+	public MongoClient mongoClient(@Value("${MONGO_URL}") String url){
 		return MongoClients.create(url);
 	}
 

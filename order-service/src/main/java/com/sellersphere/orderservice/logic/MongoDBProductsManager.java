@@ -68,8 +68,8 @@ public final class MongoDBProductsManager implements ProductsManager {
             var productId = stockItem.getObjectId("_id");
             int requiredStock = requiredItems.get(productId);
             if (reserveStockForProduct(productId, requiredStock, stockItem, session)){
-                String name = stockItem.getString("name");
-                double price = stockItem.getDouble("price");
+                String name = stockItem.getString("productName");
+                int price = stockItem.getInteger("price");
                 orderItems.add(new OrderItem(productId.toHexString(), name, requiredStock, price));
                 continue;
             }
@@ -80,7 +80,7 @@ public final class MongoDBProductsManager implements ProductsManager {
 
     private ArrayList<Document> findRequredItems(HashMap<ObjectId, Integer> requiredItems) throws OrderPlacementException.ProductNotFoundException {
         var stockItems = products.find(Filters.in("_id", requiredItems.keySet()))
-                .projection(include("_id", "name", "quantity", "price", "version"))
+                .projection(include("_id", "productName", "quantity", "price", "version"))
                 .into(new ArrayList<>(requiredItems.size()));
         if (stockItems.size() != requiredItems.size()){
             var missingObjectId = stockItems.stream()
@@ -96,12 +96,12 @@ public final class MongoDBProductsManager implements ProductsManager {
         int retries = 5;
         do {
             var document = products.find(session, eq("_id", productId))
-                    .projection(include("name", "quantity", "price", "version"))
+                    .projection(include("productName", "quantity", "price", "version"))
                     .first();
             if (document == null) throw new OrderPlacementException.ProductNotFoundException(productId.toHexString());
             if (reserveStockForProduct(productId, requiredStock, document, session)){
-                String productName = document.getString("name");
-                double price = document.getDouble("price");
+                String productName = document.getString("productName");
+                int price = document.getInteger("price");
                 return new OrderItem(productId.toHexString(), productName, requiredStock, price);
             }
             retries--;

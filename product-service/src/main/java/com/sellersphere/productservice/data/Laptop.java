@@ -1,5 +1,8 @@
 package com.sellersphere.productservice.data;
 
-public record Laptop(String productId, int quantity, double price, int ram) implements Product {
+import java.util.List;
+
+public record Laptop(String productId, String productName, int quantity, int price, int ram,
+                     List<String> images, String description) implements Product {
 
 }

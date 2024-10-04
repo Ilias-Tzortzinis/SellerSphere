@@ -31,9 +31,7 @@ public final class DynamoDBUserShoppingCartLoader implements UserShoppingCartLoa
                 .build()).items();
         if (items.isEmpty()) return List.of();
         var cartItems = new ArrayList<CartItem>(items.size());
-        for (Map<String, AttributeValue> item : items) {
-            cartItems.add(decodeItem(item));
-        }
+        for (Map<String, AttributeValue> item : items) cartItems.add(decodeItem(item));
         return cartItems;
     }
 

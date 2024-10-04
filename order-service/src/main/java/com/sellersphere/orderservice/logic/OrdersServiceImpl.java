@@ -26,7 +26,7 @@ public final class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public Optional<OrderDetials> findOrderById(String userId, String orderId) {
+    public Optional<OrderDetails> findOrderById(String userId, String orderId) {
         return ordersRepository.findOrderById(userId, orderId);
     }
 
@@ -36,7 +36,7 @@ public final class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public OrderDetials placeOrder(String userId) throws OrderPlacementException, EmptyShoppingCartException {
+    public OrderDetails placeOrder(String userId) throws OrderPlacementException, EmptyShoppingCartException {
         var dateTime = ZonedDateTime.now(Clock.systemUTC());
         var cartItems = userCartLoader.loadUserCart(userId);
         if (cartItems.isEmpty()) throw new EmptyShoppingCartException();

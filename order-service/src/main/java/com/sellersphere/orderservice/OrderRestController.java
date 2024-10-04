@@ -1,7 +1,7 @@
 package com.sellersphere.orderservice;
 
 import com.sellersphere.authorization.AuthorizedUser;
-import com.sellersphere.orderservice.data.OrderDetials;
+import com.sellersphere.orderservice.data.OrderDetails;
 import com.sellersphere.orderservice.logic.OrderPlacementException;
 import com.sellersphere.orderservice.data.OrderQuery;
 import com.sellersphere.orderservice.data.UserOrderView;
@@ -33,7 +33,7 @@ public final class OrderRestController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDetials> findOrderById(@PathVariable String orderId){
+    public ResponseEntity<OrderDetails> findOrderById(@PathVariable String orderId){
         return AuthorizedUser.current().map(auth -> {
             return ordersService.findOrderById(auth.userId(), orderId)
                     .map(ResponseEntity::ok)

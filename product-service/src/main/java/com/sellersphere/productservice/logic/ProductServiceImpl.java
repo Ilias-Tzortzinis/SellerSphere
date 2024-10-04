@@ -53,18 +53,21 @@ public final class ProductServiceImpl implements ProductService {
     private Product decodeProduct(ProductCategory category, Document document) {
         String productId = document.getObjectId("_id").toHexString();
         int quantity = document.getInteger("quantity");
-        double price = document.getDouble("price");
+        int price = document.getInteger("price");
+        String productName = document.getString("productName");
+        List<String> images = document.getList("images", String.class);
+        String description = document.getString("description");
         return switch (category){
             case LAPTOP -> {
                 int ram = document.getInteger("ram");
-                yield new Laptop(productId, quantity, price, ram);
+                yield new Laptop(productId, productName, quantity, price, ram, images, description);
             }
         };
     }
 
     private ProductOverview decodeProductOverview(Document doc) {
         var productId = doc.getObjectId("_id").toHexString();
-        var price = doc.getDouble("price");
+        int price = doc.getInteger("price");
         var quantity = doc.getInteger("quantity");
         return new ProductOverview(productId, quantity, price);
     }
