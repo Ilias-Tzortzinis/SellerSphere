@@ -2,8 +2,7 @@ package com.sellersphere.productservice;
 
 import com.mongodb.client.MongoClient;
 import com.sellersphere.productservice.data.Laptop;
-import com.sellersphere.productservice.data.ProductOverview;
-import io.restassured.RestAssured;
+import com.sellersphere.productservice.data.ProductView;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.instancio.Instancio;
@@ -12,15 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.List;
 
 import static com.sellersphere.productservice.data.ProductCategory.LAPTOP;
 import static io.restassured.RestAssured.given;
@@ -61,7 +57,7 @@ class ProductServiceApplicationIntegrationTests {
 		assertThat(given().port(productService).queryParams("minPrice", minPrice, "maxPrice", maxPrice)
 				.when().get("/products/search/laptop")
 				.then().statusCode(200)
-				.extract().jsonPath().getList("$", ProductOverview.class))
+				.extract().jsonPath().getList("$", ProductView.class))
 				.hasSize(expectedCount);
 	}
 

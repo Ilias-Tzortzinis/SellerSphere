@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-service-deployment
+  labels:
+    app: cart-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart-service
+  template:
+    metadata:
+      labels:
+        app: cart-service
+    spec:
+      containers:
+        - name: cart-service
+          image: seller-sphere/cart-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: secret-access-key
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: aws-config
+                  key: region
+            - name: DYNAMODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: aws-config
+                  key: dynamodb-url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: security
+                  key: jwt-secret
+

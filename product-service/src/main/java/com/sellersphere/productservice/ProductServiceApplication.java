@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class ProductServiceApplication {
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(){
+	public SecurityFilterChain securityFilterChain(CorsFilter corsFilter){
 		return new SecurityFilterChain() {
 			@Override
 			public boolean matches(HttpServletRequest request) {
@@ -30,9 +33,19 @@ public class ProductServiceApplication {
 
 			@Override
 			public List<Filter> getFilters() {
-				return List.of();
+				return List.of(corsFilter);
 			}
 		};
+	}
+
+	@Bean
+	public CorsFilter corsFilter(){
+		var cors = new CorsConfiguration();
+		cors.addAllowedOrigin("*");
+		cors.setAllowedMethods(List.of("GET", "POST"));
+		var source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", cors);
+		return new CorsFilter(source);
 	}
 
 	@Bean

@@ -2,7 +2,7 @@ package com.sellersphere.productservice.rest;
 
 import com.sellersphere.productservice.data.Product;
 import com.sellersphere.productservice.data.ProductCategory;
-import com.sellersphere.productservice.data.ProductOverview;
+import com.sellersphere.productservice.data.ProductView;
 import com.sellersphere.productservice.data.ProductQuery;
 import com.sellersphere.productservice.logic.ProductService;
 import org.hibernate.validator.constraints.Length;
@@ -27,8 +27,8 @@ public final class ProductRestController {
     }
 
     @GetMapping("/search/{category}")
-    public List<ProductOverview> searchProducts(@PathVariable String category,
-                                                @RequestParam Map<String, String> queryParams){
+    public List<ProductView> searchProducts(@PathVariable String category,
+                                            @RequestParam Map<String, String> queryParams){
         ProductCategory productCategory = ProductCategory.fromString(category)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown category: ".concat(category)));
         try {

@@ -27,9 +27,9 @@ public final class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductOverview> searchProducts(ProductQuery query) throws InvalidProductQueryException {
+    public List<ProductView> searchProducts(ProductQuery query) throws InvalidProductQueryException {
         return products.find(encodeProductQuery(query)).limit(15)
-                .projection(include("_id", "price", "quantity"))
+                .projection(include("_id", "productName", "price", "quantity", "images"))
                 .map(this::decodeProductOverview)
                 .into(new ArrayList<>(15));
     }
@@ -65,11 +65,13 @@ public final class ProductServiceImpl implements ProductService {
         };
     }
 
-    private ProductOverview decodeProductOverview(Document doc) {
+    private ProductView decodeProductOverview(Document doc) {
         var productId = doc.getObjectId("_id").toHexString();
+        String productName = doc.getString("productName");
         int price = doc.getInteger("price");
         var quantity = doc.getInteger("quantity");
-        return new ProductOverview(productId, quantity, price);
+        String image = doc.getList("images", String.class).getFirst();
+        return new ProductView(productId, productName, image, quantity, price);
     }
 
     private Bson encodeProductQuery(ProductQuery query) throws InvalidProductQueryException {
